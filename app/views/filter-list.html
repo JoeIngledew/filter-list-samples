@@ -1,0 +1,129 @@
+
+{% extends "layout.html" %}
+
+{%- from "govuk/components/checkboxes/macro.njk" import govukCheckboxes -%}
+{%- from "govuk/components/input/macro.njk" import govukInput -%}
+{%- from "govuk/components/table/macro.njk" import govukTable -%}
+{%- from "moj/components/filter/macro.njk" import mojFilter -%}
+{%- from "moj/components/button-menu/macro.njk" import mojButtonMenu -%}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{% block pageTitle %}
+  Home – GOV.UK Prototype Kit
+{% endblock %}
+{% if not backText %}
+    {% set backText = 'Back'  %}
+{% endif %}
+{% if not backLink %}
+    {% set backLink = '/' %}
+{% endif %}
+
+{% block pageNavigation %}
+  {% if backLink %}
+    {{ govukBackLink({
+      text: backText,
+      href: backLink
+    }) }}
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+
+{% set filterOptionsHtml %}
+  {{ govukInput({
+    id: 'search',
+    name: 'search',
+    label: {
+        text: 'Search',
+        classes: 'govuk-label--m'
+    }
+  }) }}
+
+  {{ govukCheckboxes({
+    idPrefix: 'country',
+    name: 'country',
+    classes: "govuk-checkboxes--small",
+    fieldset: {
+        legend: {
+            text: "Country",
+            classes: "govuk-fieldset__legend--m"
+        }
+    },
+    items: countries
+  }) }}
+
+  {{ govukCheckboxes({
+    idPrefix: 'company',
+    name: 'company',
+    classes: "govuk-checkboxes--small",
+    fieldset: {
+        legend: {
+            text: "Company",
+            classes: "govuk-fieldset__legend--m"
+        }
+    },
+    items: companies
+  }) }}
+
+  {{ govukCheckboxes({
+    idPrefix: 'status',
+    name: 'status',
+    classes: "govuk-checkboxes--small",
+    fieldset: {
+        legend: {
+            text: "Status",
+            classes: "govuk-fieldset__legend--m"
+        }
+    },
+    items: statuses
+  }) }}
+
+{% endset %}
+
+<h1 class="govuk-heading-l">PLEASE NOTE: This page does not work as I can't find a way to submit the form for the filters</h1>
+
+<div class="moj-filter-layout">
+    <div class="moj-filter-layout__filter">
+        {{ mojFilter({
+            heading: {
+                text: "Filter"
+            },
+            selectedFilters: {
+                heading: {
+                    text: "Selected filters"
+                },
+                clearLink: {
+                    text: "Clear filters",
+                    href: "/filter-list"
+                },
+                categories: []
+            },
+            optionsHtml: filterOptionsHtml
+        }) }}
+    </div>
+    <div class="moj-filter-layout__content">
+        <div class="moj-action-bar">
+            <div class="moj-action-bar__filter"></div>
+            {{ mojButtonMenu({
+                items: []
+            }) }}
+        </div>
+        <div class="moj-scrollable-pane">
+            <div class="moj-scrollable-pane__wrapper">
+                {{ govukTable({
+                    firstCellIsHeader: true,
+                    head: [
+                        { text: "Reference No." },
+                        { text: "Full name" },
+                        { text: "Country" },
+                        { text: "Company" },
+                        { text: "Status" }
+                    ],
+                    rows: listItems
+                }) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
